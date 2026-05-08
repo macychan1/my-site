@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>急救模擬考試 100題</title>
+<title>急救模擬考試</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f3f0;min-height:100vh;padding:20px;color:#5a5a5a}
@@ -16,7 +16,7 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 .question-number{color:#a8b5a0;font-size:0.9em;margin-bottom:12px}
 .question-text{font-size:1.1em;line-height:1.6;margin-bottom:20px;color:#4a4a4a}
 .options{display:flex;flex-direction:column;gap:12px}
-.option{background:#f7f5f2;border:2px solid #e0ddd8;border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.2s;font-size:1em;color:#5a5a5a}
+.option{background:#f7f5f2;border:2px solid #e0ddd8;border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.2s;font-size:1em;color:#5a5a5a;text-align:left}
 .option:hover{background:#efe9e3;border-color:#c5bfb5}
 .option.correct{background:#d4e0d0;border-color:#a8b5a0;color:#5a6b52}
 .option.wrong{background:#e8d8d4;border-color:#c4ada3;color:#8b5a4a}
@@ -31,10 +31,9 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 .stat-box{background:#fff;padding:16px;border-radius:12px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.03)}
 .stat-value{font-size:2em;font-weight:bold;color:#7d8b7a}
 .stat-label{font-size:0.85em;color:#a0a0a0}
-.wrong-list{margin-top:20px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+.wrong-list{margin-top:20px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.05);text-align:left}
 .wrong-title{color:#b08b7a;margin-bottom:12px;font-size:1.1em}
 .wrong-item{background:#f7f5f2;padding:12px;border-radius:8px;margin-bottom:8px;font-size:0.9em;color:#5a5a5a}
-.wrong-item strong{color:#b09a7a}
 .result-card{background:#fff;border-radius:20px;padding:32px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
 .result-score{font-size:4em;font-weight:bold;color:#7d8b7a}
 .result-grade{font-size:1.5em;margin:16px 0}
@@ -44,25 +43,28 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 .grade-fail{color:#b08b7a}
 .restart-btn{padding:16px 32px;background:#a8b5a0;border:none;border-radius:12px;color:#fff;font-size:1.1em;font-weight:bold;cursor:pointer;margin-top:20px}
 .restart-btn:hover{background:#8a9a82}
-.start-screen{text-align:center;padding:40px}
-.start-btn{padding:20px 48px;background:#a8b5a0;border:none;border-radius:16px;color:#fff;font-size:1.3em;font-weight:bold;cursor:pointer;margin-top:24px}
-.start-btn:hover{background:#8a9a82}
-.start-desc{color:#8a8a8a;font-size:0.9em;margin-top:8px}
+.lang-btn{padding:20px 48px;background:#a8b5a0;border:none;border-radius:16px;color:#fff;font-size:1.2em;font-weight:bold;cursor:pointer;margin:8px}
+.lang-btn:hover{background:#8a9a82}
+.lang-btn-en{background:#9ba8a0}
+.lang-btn-en:hover{background:#7a8a72}
 .hidden{display:none}
+.back-btn{padding:12px 24px;background:#c5bfb5;border:none;border-radius:10px;color:#fff;font-size:1em;cursor:pointer;margin-bottom:16px}
+.back-btn:hover{background:#a8a09a}
 </style>
 </head>
 <body>
 <div class="container">
-<div id="start-screen" class="start-screen">
-<h1>🩺 急救模擬考試</h1>
-<p style="color:#7d8b7a;font-size:1.2em">100題選擇題</p>
-<p class="start-desc">答完後自動批改，並記錄錯題</p>
-<button class="start-btn" onclick="startExam()">開始考試</button>
+<div id="lang-screen">
+<h1>🩺 First Aid Mock Exam</h1>
+<p style="color:#7d8b7a;font-size:1.2em;margin:20px 0">選擇語言 / Select Language</p>
+<button class="lang-btn" onclick="startChinese()">🇭🇰 繁體中文 (100題)</button>
+<button class="lang-btn lang-btn-en" onclick="startEnglish()">🇬🇧 English (39 Questions)</button>
 </div>
 <div id="exam-screen" class="hidden">
+<button class="back-btn" onclick="backToLang()">← 返回 / Back</button>
 <div class="stats">
-<div class="stat-box"><div class="stat-value" id="score">0</div><div class="stat-label">得分</div></div>
-<div class="stat-box"><div class="stat-value" id="answered">0</div><div class="stat-label">已答</div></div>
+<div class="stat-box"><div class="stat-value" id="score">0</div><div class="stat-label" id="score-label">得分</div></div>
+<div class="stat-box"><div class="stat-value" id="answered">0</div><div class="stat-label" id="answered-label">已答</div></div>
 </div>
 <div class="progress-bar"><div class="progress" id="progress"></div></div>
 <div class="progress-text" id="progress-text">0 / 100</div>
@@ -76,12 +78,12 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 </div>
 <div id="result-screen" class="hidden">
 <div class="result-card">
-<h2 style="margin-bottom:20px;color:#7d8b7a">考試完成！</h2>
-<div class="result-score" id="final-score">0</div>
+<h2 id="result-title" style="margin-bottom:20px;color:#7d8b7a">考試完成！</h2>
+<div class="result-score" id="final-score">0%</div>
 <div class="result-grade" id="final-grade"></div>
 <div class="stats">
-<div class="stat-box"><div class="stat-value" id="final-correct">0</div><div class="stat-label">答對</div></div>
-<div class="stat-box"><div class="stat-value" id="final-wrong" style="color:#b08b7a">0</div><div class="stat-label">答錯</div></div>
+<div class="stat-box"><div class="stat-value" id="final-correct">0</div><div class="stat-label" id="correct-label">答對</div></div>
+<div class="stat-box"><div class="stat-value" id="final-wrong" style="color:#b08b7a">0</div><div class="stat-label" id="wrong-label">答錯</div></div>
 </div>
 <div id="wrong-list" class="wrong-list hidden"></div>
 <button class="restart-btn" onclick="restartExam()">重新開始</button>
@@ -89,7 +91,8 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 </div>
 </div>
 <script>
-const questions=[
+// Chinese questions (100)
+const chineseQuestions = const questions=[
 {q:"以下情況，應獲得優先處理的傷病者是：",options:["擦傷","手指骨折","人事不省","扭傷"],answer:2},
 {q:"下列哪一項是病徵？",options:["皮膚冰冷","口渴","痛楚","噁心"],answer:0},
 {q:"在進行心肺復甦法時，為減少與傷病者直接接觸，急救員可使用：",options:["膠布","繃帶","口面防護膜","紙巾"],answer:2},
@@ -190,15 +193,193 @@ const questions=[
 {q:"異物插入眼球，急救員應：",options:["用棉花棒小心清走異物","叫傷病者用力閉眼或揉搓眼皮","不可嘗試取走異物，儘快尋求醫療援助","用洗眼杯浸洗傷眼"],answer:2},
 {q:"以下哪一項是急救員需要為傷病者負上的民事法律責任？",options:["謹慎責任","侵權責任","保障責任","私隱責任"],answer:0},
 {q:"跌倒時手先著地，壓力傳至鎖骨而使它折斷，這是由於以下甚麼原因引致的？",options:["直接暴力","骨骼有感染","間接暴力","骨骼老化"],answer:2}
-];
-let current=0,score=0,answered=0,wrong=[];
-function shuffle(){for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]];}}
-function startExam(){document.getElementById('start-screen').classList.add('hidden');document.getElementById('exam-screen').classList.remove('hidden');shuffle();showQuestion();}
-function showQuestion(){const q=questions[current];document.getElementById('question-number').textContent='第 '+(current+1)+' 題';document.getElementById('question-text').textContent=q.q;document.getElementById('score').textContent=score;document.getElementById('answered').textContent=answered;document.getElementById('progress').style.width=(current/questions.length*100)+'%';document.getElementById('progress-text').textContent=current+' / '+questions.length;document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='';document.getElementById('next-btn').classList.remove('show');const oc=document.getElementById('options');oc.innerHTML='';const letters=['A','B','C','D'];q.options.forEach((opt,i)=>{const btn=document.createElement('div');btn.className='option';btn.textContent=letters[i]+') '+opt;btn.onclick=()=>selectOption(i);oc.appendChild(btn);});}
-function selectOption(index){const q=questions[current];const opts=document.querySelectorAll('.option');opts.forEach(o=>o.classList.add('disabled'));if(index===q.answer){opts[index].classList.add('correct');document.getElementById('feedback').className='feedback correct';document.getElementById('feedback').textContent='✅ 正確！';score++;}else{opts[index].classList.add('wrong');opts[q.answer].classList.add('correct');document.getElementById('feedback').className='feedback wrong';document.getElementById('feedback').textContent='❌ 錯誤！正確答案：'+['A','B','C','D'][q.answer];wrong.push({n:current+1,q:q.q});}answered++;document.getElementById('score').textContent=score;document.getElementById('answered').textContent=answered;document.getElementById('next-btn').classList.add('show');}
-function nextQuestion(){current++;if(current>=questions.length){showResults();}else{showQuestion();}}
-function showResults(){document.getElementById('exam-screen').classList.add('hidden');document.getElementById('result-screen').classList.remove('hidden');const p=Math.round(score/questions.length*100);document.getElementById('final-score').textContent=p+'%';document.getElementById('final-correct').textContent=score;document.getElementById('final-wrong').textContent=questions.length-score;let gt='',gc='';if(p>=90){gt='🏆 優秀！';gc='grade-excellent';}else if(p>=75){gt='👍 良好！';gc='grade-good';}else if(p>=60){gt='🤔 合格邊緣';gc='grade-pass';}else{gt='❌ 需要再努力';gc='grade-fail';}const ge=document.getElementById('final-grade');ge.textContent=gt;ge.className='result-grade '+gc;if(wrong.length>0){const wl=document.getElementById('wrong-list');wl.classList.remove('hidden');wl.innerHTML='<div class="wrong-title">📋 錯題記錄（'+wrong.length+'題）</div>';wrong.forEach(w=>{const item=document.createElement('div');item.className='wrong-item';item.innerHTML='<strong>Q'+w.n+':</strong> '+w.q.substring(0,60)+'...';wl.appendChild(item);});}}
-function restartExam(){current=0;score=0;answered=0;wrong=[];document.getElementById('result-screen').classList.add('hidden');document.getElementById('start-screen').classList.remove('hidden');}
+];;
+
+// English questions (39) - format for this system
+const englishQuestionsRaw = [{"q": "What is the FIRST consideration in First Aid priorities?", "correct": "Assess the situation safely, quickly and calmly", "wrong": ["Check the casualty's breathing immediately", "Call for an ambulance right away", "Provide first aid treatment as fast as possible"]}, {"q": "If an unconscious casualty is found trapped in a car accident, what should you do?", "correct": "Don't move the casualty vigorously", "wrong": ["Drag the casualty out of the car immediately", "Leave the casualty and call for help", "Try to wake the casualty by shaking them"]}, {"q": "What is the FIRST important duty of a first aider in an emergency?", "correct": "Ensure the scene is safe", "wrong": ["Check the casualty's pulse", "Call for an ambulance", "Start CPR immediately"]}, {"q": "When a casualty tells you they feel cold and dizzy, these clues are called:", "correct": "Symptoms", "wrong": ["Signs", "Vital signs", "Indicators"]}, {"q": "What senses should be used to check for signs of a casualty?", "correct": "Look, listen, feel, smell", "wrong": ["Look, taste, touch, smell", "See, hear, smell, feel", "Observe, ask, touch, smell"]}, {"q": "How long does it take for brain cells to begin failing when deprived of oxygen?", "correct": "4 minutes", "wrong": ["2 minutes", "6 minutes", "10 minutes"]}, {"q": "What is the correct sequence of casualty assessment?", "correct": "Danger, Response, Airway, Breathing, Circulation", "wrong": ["Breathing, Circulation, Airway, Response, Danger", "Response, Airway, Breathing, Circulation, Danger", "Airway, Breathing, Circulation, Response, Danger"]}, {"q": "What does the epiglottis prevent?", "correct": "Inhalation of food or drink into the airway", "wrong": ["Loss of consciousness", "Excessive bleeding", "Spread of infection"]}, {"q": "What is the percentage of oxygen in air?", "correct": "21%", "wrong": ["16%", "25%", "30%"]}, {"q": "Which blood vessel reflects the heartbeat?", "correct": "Arteries", "wrong": ["Veins", "Capillaries", "Venules"]}, {"q": "What is the clear yellow fluid in the component of blood?", "correct": "Plasma", "wrong": ["Serum", "White blood cells", "Platelets"]}, {"q": "In a gunshot wound, what are the characteristics of entry and exit wounds?", "correct": "Entry is small, exit is large", "wrong": ["Both entry and exit are the same size", "Entry is large, exit is small", "Both entry and exit are ragged and irregular"]}, {"q": "How often should you check circulation while applying direct pressure to control severe bleeding?", "correct": "Every 10 minutes", "wrong": ["Every 5 minutes", "Every 15 minutes", "Every 30 minutes"]}, {"q": "If a man was bitten by a dog and has profuse bleeding, what should be the IMMEDIATE action?", "correct": "Summon help", "wrong": ["Apply tourniquet", "Wash the wound with water", "Capture the dog for testing"]}, {"q": "What is the first aid treatment for jellyfish stings?", "correct": "Pour household vinegar over the injury for a few minutes", "wrong": ["Apply ice directly to the sting", "Rinse with seawater", "Rub the sting with sand"]}, {"q": "What is the FIRST important principle when treating an unconscious casualty?", "correct": "Maintain the casualty's airway open", "wrong": ["Stop any bleeding", "Check for fractures", "Keep the casualty warm"]}, {"q": "Cerebral concussion may cause:", "correct": "The brain has shaken in the skull", "wrong": ["Bleeding in the brain", "Skull fracture", "Spinal cord damage"]}, {"q": "What does 'Unstable fracture' mean?", "correct": "Causing injury to adjoining internal organs", "wrong": ["The bone is completely broken", "The bone is cracked but not displaced", "The joint is dislocated"]}, {"q": "What causes dislocation?", "correct": "A strong force wrenching a bone at a joint into an abnormal position", "wrong": ["A hairline crack in the bone", "Overuse of the joint", "Vitamin deficiency"]}, {"q": "How should a first aider treat a casualty with a sprain?", "correct": "Apply a cold compress to the injured part", "wrong": ["Apply heat to the injured part", "Massage the injured part", "Stretch the injured part"]}, {"q": "What causes scalds?", "correct": "Steam or boiled oil", "wrong": ["Hot metal objects", "Open flames", "Hot water only"]}, {"q": "Why should you NOT break a blister?", "correct": "To prevent infection", "wrong": ["To reduce pain", "To speed up healing", "To prevent scarring"]}, {"q": "What does a partial-thickness burn look like?", "correct": "The skin looks raw with blisters", "wrong": ["The skin is red and swollen only", "The skin is charred and black", "The skin is white and numb"]}, {"q": "What is the best temperature for a human body?", "correct": "37°C", "wrong": ["35°C", "38°C", "36°C"]}, {"q": "How can you warm an affected hand if a casualty suffers from frostbite of the hand?", "correct": "Warm the affected hand in the casualty's opposite armpit", "wrong": ["Run hot water over the hand", "Rub the hand vigorously", "Apply direct heat with a hairdryer"]}, {"q": "How should you treat an unconscious casualty who still has breathing and circulation?", "correct": "Place the casualty in the recovery position", "wrong": ["Give mouth-to-mouth rescue breathing", "Perform chest compressions", "Sit the casualty upright"]}, {"q": "When a foreign object is embedded in a casualty's eyeball, what should you do?", "correct": "Cover the affected eye with an eye pad", "wrong": ["Try to remove the object", "Apply pressure to the eye", "Wash the eye with water"]}, {"q": "Why should a first aider re-check circulation after bandaging an injured limb?", "correct": "The circulation of the injured limb may be impeded", "wrong": ["To check if bleeding has stopped", "To ensure the bandage is secure", "To prevent infection"]}, {"q": "What is the main use of tubular gauze for the finger?", "correct": "To secure dressing on the finger", "wrong": ["To immobilize the finger joint", "To stop bleeding from the fingertip", "To protect the finger from infection"]}, {"q": "A patient's calf is crushed by a heavy beam. How long should you wait before removing the beam?", "correct": "15 minutes - until a doctor's advice", "wrong": ["Remove immediately to free the patient", "30 minutes after stabilization", "1 hour for swelling to reduce"]}, {"q": "When a casualty has shock, what position should they be placed in?", "correct": "Lie down and raise the legs to 30 cm", "wrong": ["Sit upright in a chair", "Lie flat on the back", "Place in the recovery position"]}, {"q": "A casualty has severe nose bleeding that cannot stop after 20-30 minutes. What should you do?", "correct": "Remove to hospital", "wrong": ["Apply a cold compress to the nose", "Tilt head backward", "Pack the nose with tissue"]}, {"q": "How long should blood refill take when pressing the nail until it turns white?", "correct": "2 seconds", "wrong": ["1 second", "3 seconds", "5 seconds"]}, {"q": "What does a 'closed fracture' mean?", "correct": "The skin around the fracture is intact", "wrong": ["The bone is not broken completely", "The joint is not affected", "No swelling appears at the fracture site"]}, {"q": "What alters the pressure in the lungs?", "correct": "Movements of intercostal muscles and diaphragm", "wrong": ["Heartbeat and pulse rate", "Blood pressure changes", "Nerve signals from the brain"]}, {"q": "When a foreign body penetrates a casualty's eyeball, what should you do?", "correct": "Arrange to hospital urgently", "wrong": ["Try to remove the object yourself", "Apply an eyepatch and wait", "Flush the eye with water"]}, {"q": "If a casualty suffers from asthma, how should you help?", "correct": "Help them take a puff of their reliever inhaler", "wrong": ["Give them water to drink", "Make them lie down flat", "Cover their mouth to regulate breathing"]}, {"q": "What is the average volume of air that can be held in a man?", "correct": "6 liters", "wrong": ["3 liters", "4 liters", "8 liters"]}, {"q": "A casualty coughs out bloody bubbles after being hit on the chest. What is this a sign of?", "correct": "Complicated rib fracture", "wrong": ["Pneumonia", "Asthma attack", "Collapsed lung (pneumothorax)"]}];
+
+let currentLang = 'cn';
+let current=0, score=0, answered=0, wrong=[], shuffledQuestions=[];
+let totalQuestions = 100;
+
+function shuffleArray(arr) {
+    const shuffled = [...arr];
+    for(let i=shuffled.length-1; i>0; i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function startChinese() {
+    currentLang = 'cn';
+    totalQuestions = 100;
+    document.getElementById('score-label').textContent = '得分';
+    document.getElementById('answered-label').textContent = '已答';
+    document.getElementById('progress-text').textContent = '0 / 100';
+    document.getElementById('result-title').textContent = '考試完成！';
+    document.getElementById('correct-label').textContent = '答對';
+    document.getElementById('wrong-label').textContent = '答錯';
+    
+    // Convert Chinese format
+    const qs = chineseQuestions.map(q => ({
+        q: q.q,
+        options: q.options,
+        answer: q.answer
+    }));
+    
+    shuffledQuestions = shuffleArray(qs);
+    document.getElementById('lang-screen').classList.add('hidden');
+    document.getElementById('exam-screen').classList.remove('hidden');
+    current=0; score=0; answered=0; wrong=[];
+    showQuestion();
+}
+
+function startEnglish() {
+    currentLang = 'en';
+    totalQuestions = 39;
+    document.getElementById('score-label').textContent = 'Score';
+    document.getElementById('answered-label').textContent = 'Answered';
+    document.getElementById('progress-text').textContent = '0 / 39';
+    document.getElementById('result-title').textContent = 'Exam Complete!';
+    document.getElementById('correct-label').textContent = 'Correct';
+    document.getElementById('wrong-label').textContent = 'Wrong';
+    
+    // Convert English format
+    const qs = englishQuestionsRaw.map(q => ({
+        q: q.q,
+        options: [q.correct, q.wrong[0], q.wrong[1], q.wrong[2]],
+        answer: 0
+    }));
+    
+    shuffledQuestions = shuffleArray(qs);
+    document.getElementById('lang-screen').classList.add('hidden');
+    document.getElementById('exam-screen').classList.remove('hidden');
+    current=0; score=0; answered=0; wrong=[];
+    showQuestion();
+}
+
+function backToLang() {
+    document.getElementById('exam-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('lang-screen').classList.remove('hidden');
+}
+
+function showQuestion() {
+    const q = shuffledQuestions[current];
+    const qNum = currentLang === 'cn' ? '第 ' + (current+1) + ' 題' : 'Question ' + (current+1);
+    const total = currentLang === 'cn' ? ' / ' + totalQuestions : ' / ' + totalQuestions;
+    
+    document.getElementById('question-number').textContent = qNum;
+    document.getElementById('question-text').textContent = q.q;
+    document.getElementById('score').textContent = score;
+    document.getElementById('answered').textContent = answered;
+    document.getElementById('progress').style.width = (current/totalQuestions*100) + '%';
+    document.getElementById('progress-text').textContent = current + total;
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('next-btn').classList.remove('show');
+    
+    const oc = document.getElementById('options');
+    oc.innerHTML = '';
+    
+    // Shuffle options
+    const optIndices = [0,1,2,3];
+    const shuffledOpts = shuffleArray(optIndices);
+    
+    shuffledOpts.forEach((optIdx, i) => {
+        const btn = document.createElement('div');
+        btn.className = 'option';
+        btn.textContent = q.options[optIdx];
+        btn.dataset.correct = (optIdx === q.answer);
+        btn.dataset.originalIdx = optIdx;
+        btn.onclick = () => selectOption(btn, optIdx === q.answer, q.options[q.answer]);
+        oc.appendChild(btn);
+    });
+}
+
+function selectOption(selectedBtn, isCorrect, correctAnswer) {
+    const opts = document.querySelectorAll('.option');
+    opts.forEach(o => o.classList.add('disabled'));
+    
+    if(isCorrect) {
+        selectedBtn.classList.add('correct');
+        document.getElementById('feedback').className = 'feedback correct';
+        document.getElementById('feedback').textContent = currentLang === 'cn' ? '✅ 正確！' : '✅ Correct!';
+        score++;
+    } else {
+        selectedBtn.classList.add('wrong');
+        opts.forEach(o => {
+            if(o.dataset.correct === 'true') o.classList.add('correct');
+        });
+        document.getElementById('feedback').className = 'feedback wrong';
+        const wrongText = currentLang === 'cn' ? '❌ 錯誤！正確答案：' : '❌ Wrong! Answer: ';
+        document.getElementById('feedback').textContent = wrongText + correctAnswer;
+        wrong.push({n: current+1, q: shuffledQuestions[current].q, a: correctAnswer});
+    }
+    
+    answered++;
+    document.getElementById('score').textContent = score;
+    document.getElementById('answered').textContent = answered;
+    document.getElementById('next-btn').classList.add('show');
+}
+
+function nextQuestion() {
+    current++;
+    if(current >= totalQuestions) {
+        showResults();
+    } else {
+        showQuestion();
+    }
+}
+
+function showResults() {
+    document.getElementById('exam-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    
+    const p = Math.round(score/totalQuestions*100);
+    document.getElementById('final-score').textContent = p + '%';
+    document.getElementById('final-correct').textContent = score;
+    document.getElementById('final-wrong').textContent = totalQuestions - score;
+    
+    let gt = '', gc = '';
+    if(currentLang === 'cn') {
+        if(p >= 90) { gt = '🏆 優秀！'; gc = 'grade-excellent'; }
+        else if(p >= 75) { gt = '👍 良好！'; gc = 'grade-good'; }
+        else if(p >= 60) { gt = '🤔 合格邊緣'; gc = 'grade-pass'; }
+        else { gt = '❌ 需要再努力'; gc = 'grade-fail'; }
+    } else {
+        if(p >= 90) { gt = '🏆 Excellent!'; gc = 'grade-excellent'; }
+        else if(p >= 75) { gt = '👍 Good!'; gc = 'grade-good'; }
+        else if(p >= 60) { gt = '🤔 Pass'; gc = 'grade-pass'; }
+        else { gt = '❌ Need more practice'; gc = 'grade-fail'; }
+    }
+    
+    const ge = document.getElementById('final-grade');
+    ge.textContent = gt;
+    ge.className = 'result-grade ' + gc;
+    
+    if(wrong.length > 0) {
+        const wl = document.getElementById('wrong-list');
+        wl.classList.remove('hidden');
+        const wrongTitle = currentLang === 'cn' ? '📋 錯題記錄（' + wrong.length + '題）' : '📋 Wrong Answers (' + wrong.length + ')';
+        wl.innerHTML = '<div class="wrong-title">' + wrongTitle + '</div>';
+        wrong.forEach(w => {
+            const item = document.createElement('div');
+            item.className = 'wrong-item';
+            const qLabel = currentLang === 'cn' ? 'Q' : 'Q';
+            const correctLabel = currentLang === 'cn' ? '<strong>正確答案:</strong> ' : '<strong>Correct:</strong> ';
+            item.innerHTML = '<strong>' + qLabel + w.n + ':</strong> ' + w.q.substring(0,60) + '...<br>' + correctLabel + w.a;
+            wl.appendChild(item);
+        });
+    }
+}
+
+function restartExam() {
+    current=0; score=0; answered=0; wrong=[];
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('lang-screen').classList.remove('hidden');
+}
 </script>
 </body>
 </html>
