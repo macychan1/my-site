@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>急救模擬考試 100題</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #4ade80;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .progress-bar {
+            background: #334155;
+            border-radius: 10px;
+            height: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+        .question-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .question-number {
+            color: #4ade80;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: #334155;
+            border: 2px solid #475569;
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1em;
+        }
+        .option:hover {
+            background: #3b5998;
+            border-color: #4ade80;
+        }
+        .option.correct {
+            background: #166534;
+            border-color: #4ade80;
+        }
+        .option.wrong {
+            background: #991b1b;
+            border-color: #ef4444;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .feedback.correct {
+            background: #166534;
+            color: #4ade80;
+        }
+        .feedback.wrong {
+            background: #991b1b;
+            color: #fca5a5;
+        }
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .next-btn.show {
+            display: block;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: #1e293b;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+        .stat-label {
+            font-size: 0.85em;
+            color: #94a3b8;
+        }
+        .wrong-list {
+            margin-top: 20px;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .wrong-title {
+            color: #f87171;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        .wrong-item {
+            background: #334155;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        .wrong-item strong {
+            color: #fbbf24;
+        }
+        .result-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+        .result-score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+        .result-grade {
+            font-size: 1.5em;
+            margin: 16px 0;
+        }
+        .grade-excellent { color: #4ade80; }
+        .grade-good { color: #22d3ee; }
+        .grade-pass { color: #fbbf24; }
+        .grade-fail { color: #f87171; }
+        .restart-btn {
+            padding: 16px 32px;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        .start-btn {
+            padding: 20px 48px;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border: none;
+            border-radius: 16px;
+            color: #000;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="start-screen" class="start-screen">
+            <h1>🩺 急救模擬考試</h1>
+            <p style="color: #94a3b8; margin-bottom: 20px;">100題選擇題</p>
+            <p style="color: #64748b; font-size: 0.9em;">答完後自動批改，並記錄錯題</p>
+            <button class="start-btn" onclick="startExam()">開始考試</button>
+        </div>
+
+        <div id="exam-screen" class="hidden">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">得分</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="answered">0</div>
+                    <div class="stat-label">已答</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 100</div>
+
+            <div class="question-card">
+                <div class="question-number" id="question-number">第 1 題</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 →</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <div class="result-card">
+                <h2 style="margin-bottom: 20px;">考試完成！</h2>
+                <div class="result-score" id="final-score">0</div>
+                <div class="result-grade" id="final-grade"></div>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="final-correct">0</div>
+                        <div class="stat-label">答對</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="final-wrong" style="color: #f87171;">0</div>
+                        <div class="stat-label">答錯</div>
+                    </div>
+                </div>
+                <div id="wrong-list" class="wrong-list hidden"></div>
+                <button class="restart-btn" onclick="restartExam()">重新開始</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 試題資料
+        const questions = [
+            {q: "以下情況，應獲得優先處理的傷病者是：", options: ["擦傷", "手指骨折", "人事不省", "扭傷"], answer: 2},
+            {q: "下列哪一項是病徵？", options: ["皮膚冰冷", "口渴", "痛楚", "噁心"], answer: 0},
+            {q: "在進行心肺復甦法時，為減少與傷病者直接接觸，急救員可使用：", options: ["膠布", "繃帶", "口面防護膜", "紙巾"], answer: 2},
+            {q: "一名男子遭狗隻咬傷，並大量出血，急救員應立即：", options: ["留意該狗隻是否會對現場人士構成即時危險", "致電999，召喚救護車", "檢查該男子的呼吸、脈搏及清醒程度", "為該男子止血及包紮"], answer: 0},
+            {q: "進行人工呼吸時，急救員吹入傷病者肺部的空氣，氧氣約佔百分之：", options: ["十八", "十四", "二十", "十六"], answer: 3},
+            {q: "檢查昏迷兒童的脈搏，應檢查他的：", options: ["手腕動脈", "撓動脈", "肱動脈", "頸動脈"], answer: 3},
+            {q: "如傷病者人事不省，無呼吸但有脈搏，急救員應：", options: ["檢查傷病者是否有其他傷勢", "施行體外心臟壓法", "施行人工呼吸法", "將傷病者置於復原臥式"], answer: 2},
+            {q: "在檢查口腔時，手指掃除法：", options: ["只可在兒童或嬰兒身上施行", "只可在成人身上施行", "只有在看見異物時才可施行", "不論是否有異物存在，仍須施行"], answer: 2},
+            {q: "處理觸電而人事不省的傷病者，在切斷電源後首要工作是：", options: ["確保傷病者的身體與電器分離", "確保環境乾燥", "檢查傷病者的燒傷程度", "檢查傷病者的呼吸和脈搏"], answer: 0},
+            {q: "一名急救員處理遇溺者時，應：", options: ["先進行1分鐘心肺復甦法，然後才報警", "先進行3分鐘心肺復甦法，然後才報警", "先進行2分鐘心肺復甦法，然後才報警", "先報警，才進行心肺復甦法"], answer: 2},
+            {q: "過敏性休克可能會有以下哪種徵狀？", options: ["瞳孔大小不一", "皮膚泛紅", "嘆氣呼吸", "脈搏緩慢"], answer: 1},
+            {q: "若心臟病患者病發時，仍然清醒，急救員應：", options: ["置復原臥式，防止舌哽", "使他坐下休息及穩定情緒", "使他側臥，調和呼吸", "使他平臥，令其舒適"], answer: 1},
+            {q: "以下哪一項是造成休克的最常見成因？", options: ["站立過久", "日炙", "大量出血", "過度疲勞"], answer: 2},
+            {q: "下列哪一項是內出血的徵狀？", options: ["皮膚乾燥", "呼吸緩慢", "脈搏快而弱", "面色潮紅"], answer: 2},
+            {q: "制止大量外出血，可以：", options: ["服食止血藥物", "用熱敷法", "在傷處加上冰凍流質", "使用直接壓法"], answer: 3},
+            {q: "長時間肢體壓傷可能會損害傷病者的：", options: ["腎臟機能", "胰臟機能", "肝臟機能", "脾臟機能"], answer: 0},
+            {q: "深層燒傷的皮膚可能出現：", options: ["穿破的水泡", "蒼白蠟色", "濕冷現象", "紅腫"], answer: 1},
+            {q: "覆蓋燒傷傷處的主要目的是：", options: ["防止皮膚組織進一步受傷", "減輕腫脹", "減輕痛楚", "避免細菌入侵"], answer: 3},
+            {q: "以下哪一項可導致乾燒傷：", options: ["繩索摩擦", "熱飲料", "乾冰", "太陽燈"], answer: 0},
+            {q: "人事不省的傷病者出現氣道受阻的主要原因是：", options: ["肺部受傷", "喉部肌肉鬆弛，引致舌頭後滑", "腦癇症發作", "牙關緊閉，令氣道阻塞"], answer: 1},
+            {q: "「中風」是由於下列哪一項原因所引起？", options: ["腦部血管閉塞", "心肌梗塞", "心臟血管阻塞", "心絞痛"], answer: 0},
+            {q: "中風的傷病者如及時接受藥物治療，可減輕病情及傷殘程度，關鍵時間為中風後多少小時內？", options: ["三小時", "四小時", "二小時", "一小時"], answer: 0},
+            {q: "在一個潮濕酷熱的天氣下，一名運動員感到暈眩、噁心、面色蒼白、皮膚濕冷、脈搏速而弱，呼吸淺而快，他可能是：", options: ["熱衰竭", "中暑", "體溫過高", "體溫過低"], answer: 0},
+            {q: "處理皮膚吸收毒物，例如園藝殺蟲劑，應：", options: ["用熱水浸泡傷患處", "用醋中和毒素", "用清水沖洗約20分鐘", "用保鮮紙包裹患處"], answer: 2},
+            {q: "魚鈎的倒鈎已刺入皮膚，處理方法應：", options: ["將魚鈎繼續前推，直至倒鈎刺穿皮膚後剪去", "用軟墊堆高圍著魚鈎，使魚鈎不受壓力", "小心將魚鈎拔出，作創傷處理", "直接按壓傷處，制止出血"], answer: 1},
+            {q: "急救員應如何處理扭傷的傷病者？", options: ["按壓腫脹的傷處", "熱敷傷處", "垂低傷肢", "冷敷傷處"], answer: 3},
+            {q: "傷病者頭部受傷，他的耳或鼻流出清澈的液體，傷病者可能是：", options: ["顱底骨骨折", "脊椎骨骨折", "鼻骨骨折", "耳膜創傷"], answer: 0},
+            {q: "下列哪一項不會引致胸部陷傷？", options: ["車禍發生時駕駛盤壓向司機的胸部", "人群擠壓", "哮喘", "爆炸受傷"], answer: 2},
+            {q: "以下哪一項可以作為臨時敷料？", options: ["手帕", "廁紙", "煙絲", "棉花"], answer: 0},
+            {q: "以下哪一項不是扶行法的注意事項？", options: ["讓傷病者手臂繞過急救員肩膊作支持", "傷病者與急救員的高度不可相差太遠", "用一隻手抓緊傷病者的褲頭作支持", "如傷病者左下肢受傷，應站於其右側"], answer: 2},
+            {q: "急救員協助傷病者服用藥物時，須確保：", options: ["使用他人的藥物去治療", "根據急救員估計的劑量", "使用過期藥物", "針對當時徵狀"], answer: 3},
+            {q: "下列哪一項是一種病狀？", options: ["發紺", "蒼白", "麻痺", "失禁"], answer: 2},
+            {q: "致電999緊急控制中心時：", options: ["可說出主要幹線公路旁或在路中心分隔石壆上的標距數字", "必須使用固網電話", "如未能即時獲得接聽，立即收線再撥", "在網絡訊號微弱的地區，可用流動電話撥打221"], answer: 0},
+            {q: "進行人工呼吸時，吹氣是直至：", options: ["傷病者胸部升起約4至5厘米為止", "傷病者胸部升起約5至6厘米為止", "傷病者胸部升起為止", "急救員的氣完全呼出"], answer: 2},
+            {q: "一名急救員進行成人、兒童及嬰兒心肺復甦法的壓胸及吹氣比率分別是：", options: ["30:2，15:2，15:2", "30:2，15:2，5:2", "30:2，30:2，30:2", "30:2，30:2，15:2"], answer: 2},
+            {q: "若在沒有旁人協助下，對兒童施行心肺復甦法時應：", options: ["先施行兩分鐘心肺復甁法，才抱著兒童離開現場，尋求援助", "先施行兩分鐘心肺復甁法，然後求援", "先施行兩分鐘心肺復甁法，待經過的旁人協助召援", "立即求援，然後施行心肺復甁法"], answer: 1},
+            {q: "一氧化碳的危險性在於：", options: ["能破壞血液中的白血球", "阻礙血紅素攜帶及釋放氧氣", "壓抑呼吸神經，使傷病者呼吸停止", "取代空氣中的氧，使傷病者缺氧"], answer: 1},
+            {q: "缺氧的徵狀是：", options: ["神志昏亂，面色潮紅", "呼吸急促，皮膚發紺", "不能說話，心跳緩慢", "面青唇白，皮膚濕冷"], answer: 1},
+            {q: "人事不省的遇溺者，急救員在水中施行人工呼吸，開始時先吹氣：", options: ["4次", "3次", "5次", "2次"], answer: 2},
+            {q: "以下哪一項是心臟病突發的常見成因？", options: ["冠狀動脈栓塞", "冠狀動脈狹窄", "冠狀動脈硬化", "冠狀動脈破裂"], answer: 0},
+            {q: "下列哪類傷病者會出現低血容量休克？", options: ["肺動脈栓塞", "脊椎受傷傷者", "心臟衰竭", "大量失血"], answer: 3},
+            {q: "管壁堅韌而有彈性的血管是：", options: ["動脈", "微絲血管", "淋巴管", "靜脈"], answer: 0},
+            {q: "槍傷的傷口有何特徵？", options: ["出口較細而整齊，入口較大", "入口較細，出口較大和不規則", "出入口皆凹凸不平", "出入口皆細小而整齊"], answer: 1},
+            {q: "處理被蜂類螫傷嘴部的方法是：", options: ["吸吮傷處", "用清水及皂液沖洗", "給予傷病者喝少量冷水", "使用熱敷"], answer: 1},
+            {q: "撲滅傷病者身上的火焰時，應：", options: ["用滅火氈蓋著傷病者", "用尼龍布包裹傷病者", "替傷病者脫去衣服", "讓傷病者走動"], answer: 0},
+            {q: "處理日炙時，可使用：", options: ["燙火膏", "海綿蘸冷水輕拭皮膚", "冰敷", "暖水袋減輕痛楚"], answer: 1},
+            {q: "處理人事不省的傷病者，最重要的急救原則是：", options: ["使傷病者清醒", "保持傷病者氣道暢通", "切勿隨意移動傷病者", "找出人事不省的原因"], answer: 1},
+            {q: "如中毒傷病者失去知覺但仍有呼吸，急救員應：", options: ["立即進行心肺復甁法", "將傷病者置於復原臥式", "使他嘔出毒劑", "灌以大量清水稀釋毒劑"], answer: 1},
+            {q: "中暑的原因是：", options: ["體內的恆溫機能失效", "過度出汗，大量損失水分和鹽分", "血壓過高", "血糖過低"], answer: 0},
+            {q: "急救員處理酒精中毒傷病者應：", options: ["替傷病者溫水擦浴降溫", "將昏迷或嗜睡傷病者置復原臥式", "供應解酒藥物或醒酒湯給傷病者", "制止傷病者暴力或破壞行為"], answer: 1},
+            {q: "處理腐蝕性液體傷及眼睛的首要步驟是儘快用：", options: ["熱水沖洗", "肥皂水沖洗", "大量清水沖洗", "眼藥水沖洗"], answer: 2},
+            {q: "下列哪一項是引致小腿抽筋的原因？", options: ["飲水太多", "運動前做了伸展運動", "吃了某一種蔬菜", "肢體保持同一姿勢過久"], answer: 3},
+            {q: "身體哪一種骨折可能會導致嚴重內出血？", options: ["大腿骨", "肩胛骨", "足踝", "髕骨"], answer: 0},
+            {q: "急救員處理骨折傷病者時，切勿：", options: ["用雙手穩定及承托傷處", "把傷處牢固地綁於身體沒有受傷的部位", "讓傷病者飲食", "沿著肢體骨骼軸心，輕輕用力拉直"], answer: 3},
+            {q: "檢查微絲血管的回流時間，正常應多久時間內回復正常顏色？", options: ["3秒", "2秒", "4秒", "1秒"], answer: 1},
+            {q: "搬運一名手臂受傷和足踝扭傷的小孩，應採用：", options: ["扶行法", "手抱法", "前後扶持法", "四手座"], answer: 1},
+            {q: "「急救」的定義是指：", options: ["受過訓練人員，在醫院內搶救傷病者的工作", "只處理危及生命的傷勢，其他傷勢交由醫生處理", "在災難事件中，協助災民重建家園", "在醫護人員到達之前，對傷病者施行初步援助及護理"], answer: 3},
+            {q: "急救員接報抵達事故現場，應首先：", options: ["給予適當和充分的急救", "鑑定傷病者病情或傷勢", "召喚救援", "評估現場情況"], answer: 3},
+            {q: "如發現口腔內有異物，應用以下甚麼方法清除？", options: ["用手指輕輕取出", "置傷病者於復原臥式", "施行推腹法", "將頭轉側，以便它流出"], answer: 0},
+            {q: "有血液循環不足徵狀的嬰兒，心跳每分鐘低於多少次，急救員便需施行體外心臟壓法？", options: ["六十", "七十", "八十", "九十"], answer: 0},
+            {q: "一般來說，替清醒的哽塞傷病者施行腹部擠壓法時，擠壓的位置應為：", options: ["胸骨下半部", "肚臍對上，隔一手掌位置", "肋骨與胸骨交匯處", "肚臍上方，遠離胸骨尖"], answer: 3},
+            {q: "替哽塞的嬰兒進行拍背，做法應是：", options: ["嬰兒身軀平放，以掌根拍打肩胛骨之間", "嬰兒身軀平放，以手掌拍打肩胛骨之間", "嬰兒頭部低於身軀，以掌根拍打肩胛骨之間", "嬰兒頭部低於身軀，以手掌拍打肩胛骨之間"], answer: 2},
+            {q: "過敏性休克可能會有以下哪種徵狀？", options: ["嘆氣呼吸", "皮膚痕癢", "瞳孔大小不一", "脈搏緩慢"], answer: 1},
+            {q: "以下哪類是常見的致敏原？", options: ["蛇毒液", "塵蟎", "碳水化合物", "抗敏感的藥物"], answer: 1},
+            {q: "一名心臟病患者出現心絞痛，服用三硝酸甘油脂(脷底丸)後五分鐘，症狀仍然持續，急救員可：", options: ["施行心肺復甁法", "繼續觀察患者", "協助患者再一次使用脷底丸", "鼓勵患者繼續活動"], answer: 2},
+            {q: "以下哪一項是使用繃帶卷的原則？", options: ["繃帶卷由上而下", "繃帶卷帶頭向下", "每周遮蓋上周1/3，而外露2/3", "繃帶卷由內而外"], answer: 2},
+            {q: "出血傷口呈不規則形狀，是哪一類創傷？", options: ["插傷", "裂傷", "刺傷", "割傷"], answer: 1},
+            {q: "處理昆蟲螫傷，應使用：", options: ["清水及皂液沖洗傷口", "熱敷法", "蜜糖敷在傷口", "按摩法"], answer: 0},
+            {q: "若發生高壓電流意外，急救員與電源應保持的安全距離最少是：", options: ["十公尺", "二十公尺", "五十公尺", "一百公尺"], answer: 1},
+            {q: "被化學物品腐蝕皮膚時，應用以下哪一種物質沖洗傷處？", options: ["鹼性液體", "白花油", "自來水", "生油"], answer: 2},
+            {q: "處理日炙時，可使用：", options: ["海綿蘸冷水輕拭皮膚", "冰敷", "暖水袋減輕痛楚", "止痛膏"], answer: 0},
+            {q: "以下哪一項不是大發作性腦癇的徵狀？", options: ["兩眼瞳孔大小不一", "發作前可能有預感", "口吐泡沫", "大小便失禁"], answer: 0},
+            {q: "腦受壓的傷病者可能會出現：", options: ["兩眼瞳孔大小不一", "呼吸淺速", "脈搏快而弱", "面色蒼白"], answer: 0},
+            {q: "吸入有毒氣體，可能會引致：", options: ["皮膚紅腫痛、有皮疹及痕癢", "皮膚燒傷", "嘔吐、腹痛及腹瀉", "氣道及肺部受影響，導致呼吸困難"], answer: 3},
+            {q: "異物入耳，對傷病者有甚麼影響？", options: ["產生幻聽", "導致耳水不平衡", "產生耳鳴", "阻塞耳道，影響聽覺或令耳膜受損"], answer: 3},
+            {q: "懷疑關節脫位，急救員不應：", options: ["致電召請救護車", "制動傷肢", "密切注意傷肢血液循環的情況", "試圖把骨骼移回原位"], answer: 3},
+            {q: "以下哪一項是「複雜骨折」？", options: ["斷骨相插", "斷骨傷及內臟器官", "斷骨粉碎", "骨折處有表面傷口"], answer: 1},
+            {q: "敷料的作用，不包括：", options: ["吸收傷口滲出的液體", "防止細菌感染", "為傷處止痛", "幫助血液凝結"], answer: 2},
+            {q: "前後扶持法不適用於：", options: ["將傷病者移動到擔架上", "人事不省的傷病者", "手臂或肩部受傷的傷病者", "將傷病者移動到椅子上"], answer: 1},
+            {q: "根據以下哪一項來決定處理傷病者的先後次序是最佳的？", options: ["痛楚及清醒程度", "年齡、病徵及病歷", "病歷、病徵、病狀及清醒程度", "病徵、病狀、年齡及出血量"], answer: 2},
+            {q: "急救員評估現場情況，首要的工作是：", options: ["評估需要何種支援", "傷病者的人數", "旁人可否協助急救", "你和傷病者是否安全"], answer: 3},
+            {q: "循環徵象之一是傷病者有：", options: ["嘔吐", "心電圖電流活動", "失禁", "咳嗽"], answer: 1},
+            {q: "施行心肺復甁法期間，應在何時進行第一次脈搏檢查？", options: ["在開始進行人工呼吸之前", "確認傷病者已經昏迷後", "在進行首兩次人工呼吸後", "在氣道通暢後"], answer: 3},
+            {q: "進行嬰兒心肺復甁法時，壓胸的深度是____厘米：", options: ["約2", "約3", "約4", "約5"], answer: 2},
+            {q: "吸氣時，橫膈膜和肋骨架的活動情況是：", options: ["橫膈膜放鬆、肋骨架向下和向內", "橫膈膜放鬆、肋骨架向上和向外", "橫膈膜收縮、肋骨架向上和向外", "橫膈膜收縮、肋骨架向下和向內"], answer: 2},
+            {q: "兒童的呼吸一般為每分鐘：", options: ["8至12次", "10至20次", "20至30次", "24至60次"], answer: 2},
+            {q: "腦部整體血液供應突然減少會造成哪一種情況？", options: ["中風", "昏厥", "過敏性休克", "休克"], answer: 1},
+            {q: "急救員應為以下哪類傷病者施行心臟去顫法：", options: ["心肌梗塞的虛弱患者", "心絞痛的孕婦", "受創傷的運動員", "沒有脈膊和呼吸的成人"], answer: 3},
+            {q: "休克傷病者失血量約百分之三十至四十時，血壓(收縮壓)可能出現：", options: ["不變", "下降", "上升", "正常"], answer: 1},
+            {q: "出血傷口呈不規則形狀，是哪一類創傷？", options: ["割傷", "刺傷", "裂傷", "插傷"], answer: 2},
+            {q: "處理腹部創傷的方法是：", options: ["以乾敷料遮蓋露出的內臟，防止感染及壞死", "讓傷病者坐下，承高頭肩", "將露出的內臟放回腹腔", "讓傷病者平臥，屈起雙膝"], answer: 0},
+            {q: "大部分靜脈的血液呈現哪種顏色？", options: ["藍紫", "紫紅", "暗紅", "鮮紅"], answer: 2},
+            {q: "以下哪一項可能會加深被燒傷處的損害？", options: ["向燒傷部位潑大量冷水", "用敷料覆蓋所有燒傷部位，但不將敷料固定", "讓傷病者躺下，盡量避免燒傷部位接觸地面", "剝除黏住傷處的衣物"], answer: 3},
+            {q: "處理燒傷時，應：", options: ["用清潔敷料遮蓋傷處", "保留傷肢上的飾物", "用強力的冷水沖洗傷處", "刺穿燒傷引起的水泡"], answer: 0},
+            {q: "處理大發作性腦癇病發作時，急救員應：", options: ["撬開傷病者口部，並放入毛巾", "防止傷病者撞傷", "使用藥油令傷病者保持清醒", "強行約束傷病者"], answer: 1},
+            {q: "以下哪一項不是血糖過低症的徵狀？", options: ["出汗頗多", "面色潮紅", "軟弱無力", "神智昏亂"], answer: 1},
+            {q: "以下哪一項不是急救的目的？", options: ["保存生命", "保持專業診斷", "防止傷勢或病情惡化", "促進復原"], answer: 1},
+            {q: "異物插入眼球，急救員應：", options: ["用棉花棒小心清走異物", "叫傷病者用力閉眼或揉搓眼皮", "不可嘗試取走異物，儘快尋求醫療援助", "用洗眼杯浸洗傷眼"], answer: 2},
+            {q: "以下哪一項是急救員需要為傷病者負上的民事法律責任？", options: ["謹慎責任", "侵權責任", "保障責任", "私隱責任"], answer: 0},
+            {q: "跌倒時手先著地，壓力傳至鎖骨而使它折斷，這是由於以下甚麼原因引致的？", options: ["直接暴力", "骨骼有感染", "間接暴力", "骨骼老化"], answer: 2}
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = 0;
+        let wrongAnswers = [];
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('exam-screen').classList.remove('hidden');
+            shuffleQuestions();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `第 ${currentQuestion + 1} 題`;
+            document.getElementById('question-text').textContent = q.q;
+            document.getElementById('score').textContent = score;
+            document.getElementById('answered').textContent = answered;
+            document.getElementById('progress').style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            document.getElementById('progress-text').textContent = `${currentQuestion} / ${questions.length}`;
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('next-btn').classList.remove('show');
+
+            const letters = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = `${letters[i]}) ${opt}`;
+                btn.onclick = () => selectOption(i);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(index) {
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.add('disabled'));
+            
+            if (index === q.answer) {
+                options[index].classList.add('correct');
+                document.getElementById('feedback').className = 'feedback correct';
+                document.getElementById('feedback').textContent = '✅ 正確！';
+                score++;
+            } else {
+                options[index].classList.add('wrong');
+                options[q.answer].classList.add('correct');
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback').textContent = `❌ 錯誤！正確答案：${['A', 'B', 'C', 'D'][q.answer]}`;
+                wrongAnswers.push({
+                    num: currentQuestion + 1,
+                    q: q.q,
+                    yourAnswer: index,
+                    correctAnswer: q.answer
+                });
+            }
+            
+            answered++;
+            document.getElementById('score').textContent = score;
+            document.getElementById('answered').textContent = answered;
+            document.getElementById('next-btn').classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                showResults();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').textContent = `${percentage}%`;
+            document.getElementById('final-correct').textContent = score;
+            document.getElementById('final-wrong').textContent = questions.length - score;
+            
+            let gradeText = '';
+            let gradeClass = '';
+            if (percentage >= 90) {
+                gradeText = '🏆 優秀！';
+                gradeClass = 'grade-excellent';
+            } else if (percentage >= 75) {
+                gradeText = '👍 良好！';
+                gradeClass = 'grade-good';
+            } else if (percentage >= 60) {
+                gradeText = '🤔 合格邊緣';
+                gradeClass = 'grade-pass';
+            } else {
+                gradeText = '❌ 需要再努力';
+                gradeClass = 'grade-fail';
+            }
+            
+            const gradeEl = document.getElementById('final-grade');
+            gradeEl.textContent = gradeText;
+            gradeEl.className = `result-grade ${gradeClass}`;
+            
+            if (wrongAnswers.length > 0) {
+                const wrongList = document.getElementById('wrong-list');
+                wrongList.classList.remove('hidden');
+                wrongList.innerHTML = `<div class="wrong-title">📋 錯題記錄（${wrongAnswers.length}題）</div>`;
+                wrongAnswers.forEach(w => {
+                    const item = document.createElement('div');
+                    item.className = 'wrong-item';
+                    item.innerHTML = `<strong>Q${w.num}:</strong> ${w.q.substring(0, 50)}...`;
+                    wrongList.appendChild(item);
+                });
+            }
+        }
+
+        function restartExam() {
+            currentQuestion = 0;
+            score = 0;
+            answered = 0;
+            wrongAnswers = [];
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
