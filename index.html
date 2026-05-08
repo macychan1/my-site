@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>急救模擬考試</title>
+<title>First Aid Mock Exam</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f3f0;min-height:100vh;padding:20px;color:#5a5a5a}
@@ -61,7 +61,7 @@ h1{text-align:center;color:#7d8b7a;margin-bottom:20px;font-size:1.8em}
 <button class="lang-btn lang-btn-en" onclick="startEnglish()">🇬🇧 English (39 Questions)</button>
 </div>
 <div id="exam-screen" class="hidden">
-<button class="back-btn" onclick="backToLang()">← 返回 / Back</button>
+<button class="back-btn" onclick="backToLang()">← Back</button>
 <div class="stats">
 <div class="stat-box"><div class="stat-value" id="score">0</div><div class="stat-label" id="score-label">得分</div></div>
 <div class="stat-box"><div class="stat-value" id="answered">0</div><div class="stat-label" id="answered-label">已答</div></div>
@@ -217,6 +217,9 @@ function startChinese() {
     document.getElementById('result-title').textContent = '考試完成！';
     document.getElementById('correct-label').textContent = '答對';
     document.getElementById('wrong-label').textContent = '答錯';
+    document.getElementById('next-btn').textContent = '下一題 →';
+    document.getElementById('restart-btn').textContent = '重新開始';
+    document.getElementById('back-btn').textContent = '← 返回';
     
     shuffledQuestions = shuffleArray([...chineseQuestions]);
     document.getElementById('lang-screen').classList.add('hidden');
@@ -234,6 +237,9 @@ function startEnglish() {
     document.getElementById('result-title').textContent = 'Exam Complete!';
     document.getElementById('correct-label').textContent = 'Correct';
     document.getElementById('wrong-label').textContent = 'Wrong';
+    document.getElementById('next-btn').textContent = 'Next →';
+    document.getElementById('restart-btn').textContent = 'Try Again';
+    document.getElementById('back-btn').textContent = '← Back';
     
     const qs = englishQuestionsRaw.map(q => ({
         q: q.q,
@@ -367,3 +373,4 @@ function restartExam() {
 }
 </script>
 </body>
+</html>
